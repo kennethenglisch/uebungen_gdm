@@ -5,7 +5,7 @@ import ij.gui.NewImage;
 import ij.plugin.PlugIn;
 import ij.process.ImageProcessor;
 
-//erste Uebung (elementare Bilderzeugung)
+//erste Uebung (elementare Bilderzeugung)bla bla
 
 public class GLDM_U1_s0570727 implements PlugIn {
 	

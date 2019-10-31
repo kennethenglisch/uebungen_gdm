@@ -97,12 +97,15 @@ public class GLDM_U1_s0570727 implements PlugIn {
 		}
 	}
 	
-	private void generateYellowImage(int width, int height, int[] pixels) {
+	private void generateYellowImage(int width, int height, int[] pixels) 
+	{	
 		// Schleife ueber die y-Werte
-		for (int y=0; y<height; y++) {
+		for (int y = 0; y < height; y++) 
+		{
 			// Schleife ueber die x-Werte
-			for (int x=0; x<width; x++) {
-				int pos = y*width + x; // Arrayposition bestimmen
+			for (int x = 0; x < width; x++) 
+			{
+				int pos = y * width + x; // Arrayposition bestimmen
 				
 				int r = 255;
 				int g = 255;
@@ -116,9 +119,9 @@ public class GLDM_U1_s0570727 implements PlugIn {
 	
 	private void generateBelgianFlag(int width, int height, int[] pixels)
 	{
-		int border1 = width/3;
-		int border2 = border1 * 2;
-		int border3 = border1 * 3;
+		int border1 = width / 3; // linker Strich
+		int border2 = border1 * 2; // mittlerer Strich
+		int border3 = border1 * 3; // rechter Strich
 		
 		int r = 0, g = 0, b = 0;
 		
@@ -128,7 +131,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 			// Schleife über die x-Werte
 			for (int x = 0; x < width; x++) 
 			{
-				int pos = y * width + x;
+				int pos = y * width + x; // Arrayposition bestimmen
 				
 				if (x <= border1) 
 				{
@@ -160,16 +163,15 @@ public class GLDM_U1_s0570727 implements PlugIn {
 	
 	private void generateUSAFlag(int width, int height, int[] pixels) 
 	{
-		int r = 0;
-		int g = 0;
-		int b = 0;
+		int r = 0, g = 0, b = 0;
 		
-		// white background
+		// Schleife über die y-Werte
 		for (int y = 0; y < height; y++) 
-		{
+		{	
+			// Schleife über die x-Werte
 			for (int x = 0; x < width; x++) 
 			{
-				int pos = y * width + x;
+				int pos = y * width + x; // Arrayposition bestimmen
 				
 				// white background
 				r = 255;
@@ -183,34 +185,42 @@ public class GLDM_U1_s0570727 implements PlugIn {
 		// red stripes
 		double stripeheight = height / 13.0;
 				
+			// stripehoehe beachten, da auch weiße streifen gleich groß sind 
+			// wird jeder zweite 'uebersprungen'
 			for (int z = 0; z < height; z += 2 * stripeheight) 
 			{
+				// Schleife über die y-Werte
 				for (int y = z; y < (z + stripeheight); y++) 
 				{
+					// Schleife über die x-Werte
 					for (int x = 0; x < width; x++) 
 					{
-						int pos = y * width + x;
+						int pos = y * width + x; // Arrayposition bestimmen
 							
 						r = 178;
 						g = 34;
 						b = 52;
 							
+						// Werte zurueckschreiben
 						pixels[pos] = 0xFF000000 | (r << 16) | (g << 8) | b;
 					}
 				}
 			}
 				
 		// blue part
-			for (int y = 0; y < (7 *stripeheight - 1.5); y++) 
+			// Schleife über die y-Werte
+			for (int y = 0; y < (7 * stripeheight - 1.5); y++) 
 			{
+				// Schleife über die X-Werte
 				for (int x = 0; x < (width / 2) -20; x++) 
 				{
-					int pos = y *  width + x;
+					int pos = y *  width + x; // Arrayposition bestimmen
 						
 					r = 60;
 					g = 59;
 					b = 110;
 						
+					// Werte zurueckschreiben
 					pixels[pos] = 0xFF000000 | (r << 16) | (g << 8) | b;
 				}
 			}
@@ -218,20 +228,21 @@ public class GLDM_U1_s0570727 implements PlugIn {
 	
 	private void generateHoriBlackRedVertiBlackBlue(int width, int height, int[] pixels) 
 	{
-		int r = 0;
-		int g = 0;
-		int b = 0;
+		int r = 0, g = 0, b = 0;
 		
+		// Schleife über die y-Werte
 		for (int y = 0; y < height; y++)
 		{
+			// Schleife über die x-Werte
 			for (int x = 0; x < width; x++)
 			{
-				int pos = y * width + x;
+				int pos = y * width + x; // Arrayposition bestimmen
 						
 				r = 255 * x / width;
 				g = 0;
 				b = 255 * y / height;
 				
+				// Werte zurueckschreiben
 				pixels[pos] = 0xFF000000 | (r << 16) | (g << 8) |  b;	
 			}
 		}
@@ -239,9 +250,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 	
 	private void generateCzechFlag(int width, int height, int[] pixels) 
 	{
-		int r = 0;
-		int g = 0;
-		int b = 0;
+		int r = 0, g = 0, b = 0;
 		
 		int border1 = height / 2;
 		int border2 = border1 * 2;
@@ -249,12 +258,13 @@ public class GLDM_U1_s0570727 implements PlugIn {
 		int halfHeight = height / 2;
 		int count = 0;
 		
+		// Schleife über die y-Werte
 		for (int y = 0; y < height; y++)
 		{
-			
+			// Schleife über die x-Werte
 			for (int x = 0; x < width; x++)
 			{
-				int pos = y*width + x; 
+				int pos = y*width + x; // Arrayposition bestimmen
 								
 				if(y <= border1 || border2 < y)
 				{
@@ -276,6 +286,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 					b = 122;
 				}
 				
+				// Werte zurueckschreiben
 				pixels[pos] = 0xFF000000 | (r << 16) | (g << 8) |  b;
 			}
 			
@@ -294,19 +305,20 @@ public class GLDM_U1_s0570727 implements PlugIn {
 	
 	private void generateBangladeschFlag(int width, int height, int[] pixels) 
 	{
-		int r = 0;
-		int g = 0;
-		int b = 0;
+		int r = 0, g = 0, b = 0;
 		int radius = 125;
 
 		
 		int placeX =  (width / 5) * 2 ;
 		int centerY = height / 2;
+		
+		// Schleife über die y-Werte
 		for(int y = 0; y < height; y++)
 		{
+			// Schleife über die x-Werte
 			for(int x = 0; x < width; x++)
 			{
-				int pos = y * width + x; 
+				int pos = y * width + x; // Arrayposition bestimmen
 				
 				int deltaY = Math.abs(centerY - y);
 				int deltaX = Math.abs(placeX - x);
@@ -328,6 +340,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 					b = 77;
 				}
 				
+				// Werte zurueckschreiben
 				pixels[pos] = 0xFF000000 | (r << 16) | (g << 8) |  b;
 				
 			}

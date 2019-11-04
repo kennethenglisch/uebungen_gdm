@@ -32,7 +32,12 @@ public class GLDM_U2 implements PlugIn {
 	
     public static void main(String args[]) {
 		//new ImageJ();
-    	IJ.open("/Users/kenneth/Documents/Uni/2. Semester/GDM/Übung 2/orchid.jpg");
+    	// Mac
+//    	IJ.open("/Users/kenneth/Documents/Uni/2. Semester/GDM/Übung 2/orchid.jpg");
+    	
+    	// Windows
+    	IJ.open("/Users/kenneth/git/uebung1_gdm/orchid.jpg");
+    	
     	//IJ.open("Z:/Pictures/Beispielbilder/orchid.jpg");
 		
 		GLDM_U2 pw = new GLDM_U2();
@@ -174,10 +179,12 @@ public class GLDM_U2 implements PlugIn {
 			return rgb;
 		}
 		
-//		private int[] changeContrast(int bigY, int u, int v) 
-//		{
-//			int bigY_new = (bigY - 128) * contrast + 128 + h;
-//		}
+		private int changeContrast(int bigY, int u, int v) 
+		{
+			int bigY_new = (int) ((bigY - 128) * contrast + 128);
+			
+			return bigY_new;
+		}
 		
 		private void changePixelValues(ImageProcessor ip) {
 			
@@ -203,8 +210,8 @@ public class GLDM_U2 implements PlugIn {
 					bigY += (int) brightness;
 					
 					// adjust contrast
-//					int[] yuv_contrast = changeContrast(bigY, u, v);
-//					bigY = yuv_contrast[0];
+//					int yuv_contrast = changeContrast(bigY, u, v);
+//					bigY = changeContrast(bigY, u, v);
 //					u = yuv_contrast[1];
 //					v = yuv_contrast[2];
 					

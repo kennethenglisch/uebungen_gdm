@@ -63,7 +63,7 @@ public class GLDM_U2 implements PlugIn {
 
 
 	class CustomCanvas extends ImageCanvas {
-    // test
+    
         CustomCanvas(ImagePlus imp) {
             super(imp);
         }

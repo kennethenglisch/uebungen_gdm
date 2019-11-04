@@ -214,7 +214,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 				// Schleife über die X-Werte
 				for (int x = 0; x < (width / 2) -20; x++) 
 				{
-					int pos = y *  width + x; // Arrayposition bestimmen
+					int pos = y * width + x; // Arrayposition bestimmen
 						
 					r = 60;
 					g = 59;
@@ -264,7 +264,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 			// Schleife über die x-Werte
 			for (int x = 0; x < width; x++)
 			{
-				int pos = y*width + x; // Arrayposition bestimmen
+				int pos = y * width + x; // Arrayposition bestimmen
 								
 				if(y <= border1 || border2 < y)
 				{
@@ -272,7 +272,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 					 g = 255;
 					 b = 255;
 				}
-				if(border1 < y && y<= border2)
+				if(border1 < y && y <= border2)
 				{
 					 r = 197;
 					 g = 47;
@@ -325,7 +325,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 				
 				double c = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
 				
-				
+				// pixel im radius
 				if(c < radius)
 				{
 					r = 208;
@@ -333,6 +333,7 @@ public class GLDM_U1_s0570727 implements PlugIn {
 					b = 67;
 				}
 				
+				// pixel außerhalb vom radius
 				if(c > radius)
 				{
 					r = 43;

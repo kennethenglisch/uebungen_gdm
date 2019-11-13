@@ -13,6 +13,7 @@ import java.awt.GridLayout;
 import java.awt.Panel;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.border.TitledBorder;
@@ -22,7 +23,7 @@ import javax.swing.event.ChangeListener;
 /**
      Opens an image window and adds a panel below the image
 */
-public class GLDM_U2 implements PlugIn {
+public class GLDM_U2_s0570727 implements PlugIn {
 
     ImagePlus imp; // ImagePlus object
 	private int[] origPixels;
@@ -40,7 +41,7 @@ public class GLDM_U2 implements PlugIn {
     	
     	//IJ.open("Z:/Pictures/Beispielbilder/orchid.jpg");
 		
-		GLDM_U2 pw = new GLDM_U2();
+		GLDM_U2_s0570727 pw = new GLDM_U2_s0570727();
 		pw.imp = IJ.getImage();
 		pw.run("");
 	}
@@ -80,12 +81,23 @@ public class GLDM_U2 implements PlugIn {
          
         private JSlider jSliderBrightness;
 		private JSlider jSliderContrast;
+		private JSlider jSliderSaettigung;
+		private JSlider jSliderHue;
+		
 		private double brightness;
 		private double contrast;
+		private double saettigung;
+		private double hue;
 
 		CustomWindow(ImagePlus imp, ImageCanvas ic) {
             super(imp, ic);
             addPanel();
+            
+            // init der Standardwerte um das Originalbild anzuzeigen
+            brightness = 0;
+            contrast = 5;
+            saettigung = 4;
+            hue = 90;
         }
     
         void addPanel() {
@@ -93,17 +105,21 @@ public class GLDM_U2 implements PlugIn {
         	Panel panel = new Panel();
 
             panel.setLayout(new GridLayout(4, 1));
-            jSliderBrightness = makeTitledSilder("Helligkeit", 0, 255, 128);
-            jSliderContrast = makeTitledSilder("Contrast", 0, 100, 50);
+            jSliderBrightness = makeTitledSlider("Helligkeit", 0, 255, 128);
+            jSliderContrast = makeTitledSlider("Kontrast", 0, 50, 5);
+            jSliderSaettigung = makeTitledSlider("Saettigung", 0, 20, 4);
+            jSliderHue = makeTitledSlider("Hue", 0, 360, 90);
+        
             panel.add(jSliderBrightness);
             panel.add(jSliderContrast);
-            
+            panel.add(jSliderSaettigung);
+            panel.add(jSliderHue);
             add(panel);
             
             pack();
          }
       
-        private JSlider makeTitledSilder(String string, int minVal, int maxVal, int val) {
+        private JSlider makeTitledSlider(String string, int minVal, int maxVal, int val) {
 		
         	JSlider slider = new JSlider(JSlider.HORIZONTAL, minVal, maxVal, val );
         	Dimension preferredSize = new Dimension(width, 50);
@@ -137,18 +153,23 @@ public class GLDM_U2 implements PlugIn {
 			
 			if (slider == jSliderContrast) 
 			{
-				double value = slider.getValue();
-				
-				if (value <= 50) contrast = (value - 40);
-				else if (value <= 60) contrast = (int) (value / 10) - 4;
-				else if (value <= 70) contrast = (int) (value / 10) - 3;
-				else if (value <= 80) contrast = (int) (value / 10) - 2;
-				else if (value <= 90) contrast = (int) (value / 10) - 1;
-				else contrast = (int) (value / 10);
-				
-				//contrast = slider.getValue();
-				String str = "Contrast " + contrast; 
+			    contrast = slider.getValue();
+				String str = "Kontrast " + contrast / 5; 
 				setSliderTitle(jSliderContrast, str); 
+			}
+			
+			if (slider == jSliderSaettigung) 
+			{
+				saettigung = slider.getValue();
+				String str = "Saettigung " + saettigung / 4;
+				setSliderTitle(jSliderSaettigung, str);
+			}
+			
+			if (slider == jSliderHue)
+			{
+				hue = slider.getValue();
+				String str = "Hue " + hue;
+				setSliderTitle(jSliderHue, str);
 			}
 			
 			changePixelValues(imp.getProcessor());
@@ -179,11 +200,31 @@ public class GLDM_U2 implements PlugIn {
 			return rgb;
 		}
 		
-		private int changeContrast(int bigY, int u, int v) 
+		private int changeContrast(int bigY) 
 		{
-			int bigY_new = (int) ((bigY - 128) * contrast + 128);
+			int bigY_new = (int) (contrast / 5 * (bigY - 127.5) + 127.5); // Formel VL Bildmanipulation I (Folie 13)
 			
 			return bigY_new;
+		}
+		
+		private int[] changeSaettigung(int u, int v) 
+		{
+			int u_new = (int) (u * saettigung / 4); 
+			int v_new = (int) (v * saettigung / 4);
+			
+			int[] uv = {u_new, v_new};
+			
+			return uv;
+		}
+		
+		private int[] changeHue(int u, int v) 
+		{
+			int u_new = (int) (u * (Math.cos(Math.toRadians(hue)) + Math.sin(Math.toRadians(hue))));
+			int v_new = (int) (v * (Math.sin(Math.toRadians(hue)) - Math.cos(Math.toRadians(hue))));
+			
+			int[] uv = {u_new, v_new};
+			
+			return uv;
 		}
 		
 		private void changePixelValues(ImageProcessor ip) {
@@ -210,10 +251,17 @@ public class GLDM_U2 implements PlugIn {
 					bigY += (int) brightness;
 					
 					// adjust contrast
-//					int yuv_contrast = changeContrast(bigY, u, v);
-//					bigY = changeContrast(bigY, u, v);
-//					u = yuv_contrast[1];
-//					v = yuv_contrast[2];
+					bigY = changeContrast(bigY);
+					
+					// adjust saettigung
+					int[] uv_saettigung = changeSaettigung(u, v);
+					u = uv_saettigung[0];
+					v = uv_saettigung[1];
+					
+					// adjuts hue
+					int[] uv_hue = changeHue(u, v);
+					u = uv_hue[0];
+					v = uv_hue[1];
 					
 					// yuv zu rgb transformieren
 					int[] rgb = transformToRGB(bigY, u, v);

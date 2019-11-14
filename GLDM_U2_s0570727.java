@@ -106,7 +106,10 @@ public class GLDM_U2_s0570727 implements PlugIn {
 
             panel.setLayout(new GridLayout(4, 1));
             jSliderBrightness = makeTitledSlider("Helligkeit", 0, 255, 128);
-            jSliderContrast = makeTitledSlider("Kontrast", 0, 50, 5);
+//            jSliderContrast = makeTitledSlider("Kontrast", 0, 50, 5);
+            
+            jSliderContrast = makeTitledSlider("Kontrast", 0, 100, 50);
+            
             jSliderSaettigung = makeTitledSlider("Saettigung", 0, 20, 4);
             jSliderHue = makeTitledSlider("Hue", 0, 360, 90);
         
@@ -151,10 +154,22 @@ public class GLDM_U2_s0570727 implements PlugIn {
 				setSliderTitle(jSliderBrightness, str); 
 			}
 			
+//			if (slider == jSliderContrast) 
+//			{
+//			    contrast = slider.getValue();
+//				String str = "Kontrast " + contrast / 5; 
+//				setSliderTitle(jSliderContrast, str); 
+//			}
+
+			// new slider in mid
 			if (slider == jSliderContrast) 
 			{
-			    contrast = slider.getValue();
-				String str = "Kontrast " + contrast / 5; 
+			    double d = slider.getValue();
+			    if (d >= 50 && d < 60) contrast = d / 10 - 4;
+			    else if (d >= 60) contrast = d / 5 - 10;
+			    else contrast = (d / 2.5 / 20);
+			    
+				String str = "Kontrast " + contrast; 
 				setSliderTitle(jSliderContrast, str); 
 			}
 			
@@ -202,7 +217,7 @@ public class GLDM_U2_s0570727 implements PlugIn {
 		
 		private int changeContrast(int bigY) 
 		{
-			int bigY_new = (int) (contrast / 5 * (bigY - 127.5) + 127.5); // Formel VL Bildmanipulation I (Folie 13)
+			int bigY_new = (int) (contrast * (bigY - 127.5) + 127.5); // Formel VL Bildmanipulation I (Folie 13)
 			
 			return bigY_new;
 		}

@@ -300,7 +300,8 @@ public class GRDM_U3_s0570727 implements PlugIn {
 			
 			if (method.equals("Fehlerdiffusion")) {
 
-				int previous;
+				int previous = 0;
+				int rgb;
 				
 				for (int y=0; y<height; y++) {
 					for (int x=0; x<width; x++) {
@@ -311,21 +312,22 @@ public class GRDM_U3_s0570727 implements PlugIn {
 						int g = (argb >>  8) & 0xff;
 						int b =  argb        & 0xff;
 
-						int durchschnitt = (r + g + b) / 3;
+						int durchschnitt = (r + g + b) / 3 + previous;
 						
-						int diff = 0;
+						if (durchschnitt <= 128) 
+						{
+							previous = durchschnitt - 0;
+							rgb = 0;
+						}
+						else 
+						{
+							previous = durchschnitt - 255;
+							rgb = 255;
+						}
 						
-						if (durchschnitt <= 128) diff = durchschnitt;
-						else if (durchschnitt > 128) durchschnitt = durchschnitt - 255;
-						
-						previous = diff;
-						
-						if (durchschnitt + previous <= 128) durchschnitt = 0;
-						else if (durchschnitt + previous > 128) durchschnitt = 255;
-						
-						int rn = durchschnitt;
-						int gn = durchschnitt;
-						int bn = durchschnitt;
+						int rn = rgb;
+						int gn = rgb;
+						int bn = rgb;
 
 						// Hier muessen die neuen RGB-Werte wieder auf den Bereich von 0 bis 255 begrenzt werden
 
@@ -365,7 +367,7 @@ public class GRDM_U3_s0570727 implements PlugIn {
 				 * dunkelblau: r = 60, g = 99, b = 134 | m = 98 | array 6-8
 				 * hellblau: r = 110, g = 133, b = 159 | m = 134 | array 9-11
 				 * hellbraun: r = 156, g = 144, b = 135 | m = 145 | array 12-14
-				 * beige: r = 209, g = 207, b = 208 | m = 208 | array 15- 18
+				 * beige: r = 209, g = 207, b = 208 | m = 208 | array 15-17
 				 */
 				int[] colors = {35, 37, 36, 100, 90, 82, 60, 99, 134, 110, 133, 159, 156, 144, 135, 209, 207, 208};
 				
@@ -378,54 +380,103 @@ public class GRDM_U3_s0570727 implements PlugIn {
 						int g = (argb >>  8) & 0xff;
 						int b =  argb        & 0xff;
 						
-//						int durchschnitt = (r + g + b) / 3;  
+//						int d = (r + g + b) / 3;  
+						
 						int rn = 0, gn = 0, bn = 0;
+//						
+//						if (r <= 30) // fast-schwarz
+//						{
+//							rn = colors[0];
+//							gn = colors[1];
+//							bn = colors[2];
+//						}
+//						else if (((r>30 && r<= 62)&& g>80)||((r>60 && r<= 100)&& b>100)) 
+//						{ // dunkelblau
+//							rn = colors[6];
+//							gn = colors[7];
+//							bn = colors[8];
+//						}
+//						else if ((r>30 && r<= 62)&& g<80)  // fast-schwarz
+//						{
+//							rn = colors[0];
+//							gn = colors[1];
+//							bn = colors[2];
+//						}
+//						else if (r>62 && r<=94) // hellbraun
+//						{
+//							rn = colors[12];
+//							gn = colors[13];
+//							bn = colors[14];
+//							}
+//						else if (r>100 && r<=120) // hellblau
+//						{
+//							rn = colors[9];
+//							gn = colors[10];
+//							bn = colors[11];
+//						}
+//						else if(r>120 && r<=200) // dunkelbraun
+//						{
+//							rn = colors[3];
+//							gn = colors[4];
+//							bn = colors[5];
+//						}
+//						else if (r > 200 && r <= 255)// beige
+//						{
+//							rn = colors[15];
+//							gn = colors[16];
+//							bn = colors[17];
+//						}
 						
-						if (r <= 41) {
-							rn = 35; // fast-schwarz
-							gn = 37;
-							bn = 36;
-						}
-						else if(((r>41 && r<= 62)&& g>80)||((r>60 && r<= 100)&& b>100)){
-							rn = 60; // dunkelblau
-							gn = 99;
-							bn = 134;
-						}
-						else if((r>41 && r<= 62)&& g<80){
-							rn = 35; //fast-schwarz
-							gn = 37;
-							bn = 36;
-						}
-						
-						else if(r>62 && r<=94){
-							rn = 110; //hellblau
-							gn = 133;
-							bn = 159;
-						}
-						else if(r>94 && r<=134){
-							rn = 100; //dunkelbraun
-							gn = 90;
-							bn = 82;
-						}
-						else if(r>134 && r<=180){
-							rn = 156; //hellbraun
-							gn = 144;
-							bn = 135;
-						}
-						else if(r>180 && r<=256){
-							rn = 209; //beige
-							gn = 207;
-							bn = 208;
-						}
-						
-
+						if (r <= 30) {
+	                        rn = 29;// schwarz
+	                        gn = 33;
+	                        bn = 32;
+	                    }
+	                    else if(((r>30 && r<= 62)&& g>80)||((r>60 && r<= 100)&& b>100)){
+	                        rn =52;//blau
+	                        gn =104;
+	                        bn = 140;
+	                    }
+	                    else if((r>30 && r<= 62)&& g<80){
+	                        rn =29;//schwarz
+	                        gn =33;
+	                        bn =32;
+	                    }
+	                     
+	                    else if(r>62 && r<=94){
+	                        rn = 72;//grau-schwarz
+	                        gn = 71;
+	                        bn = 68;
+	                    	
+	                    }
+	                    else if(r>94 && r<=134){
+	                        rn=116;//braun
+	                        gn=101;
+	                        bn=90;
+	                    }
+	                    else if(r>134 && r<=200){
+//	                        rn=151;//grau
+//	                        gn=149;
+//	                        bn=149;
+	                    	rn = colors[12];
+							gn = colors[13];
+							bn = colors[14];
+	                    }
+	                    else if(r>200 && r<=256){
+	                        rn = 208;//weiss
+	                        gn= 206;
+	                        bn= 206;
+	                    }
 						// Hier muessen die neuen RGB-Werte wieder auf den Bereich von 0 bis 255 begrenzt werden
 
 						pixels[pos] = (0xFF<<24) | (rn<<16) | (gn<<8) | bn;
 					}
 				}
 			}
-			
+			/*
+			 * grau -> hellbraun
+			 * 
+			 */
 		}
 
 

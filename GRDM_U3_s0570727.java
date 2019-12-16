@@ -300,10 +300,12 @@ public class GRDM_U3_s0570727 implements PlugIn {
 			
 			if (method.equals("Fehlerdiffusion")) {
 
-				int previous = 0;
+				
 				int rgb;
 				
 				for (int y=0; y<height; y++) {
+					int previous = 0;
+					
 					for (int x=0; x<width; x++) {
 						int pos = y*width + x;
 						int argb = origPixels[pos];  // Lesen der Originalwerte 

@@ -10,7 +10,7 @@ import ij.plugin.filter.*;
 public class GRDM_U4_s0570727 implements PlugInFilter {
 
 	protected ImagePlus imp;
-	final static String[] choices = {"Wischen", "Weiche Blende", "Overlay", "Schieb-Blende", "Chroma Key", "Extra", "Extra 2"};
+	final static String[] choices = {"Wischen", "Weiche Blende", "Overlay", "Schieb-Blende", "Chroma Key", "Jalousie"};
 
 	public int setup(String arg, ImagePlus imp) {
 		this.imp = imp;
@@ -22,7 +22,8 @@ public class GRDM_U4_s0570727 implements PlugInFilter {
 		ij.exitWhenQuitting(true);
 		
 //		IJ.open("/Users/barthel/HTW/internet/meineWebseite/veranstaltungen/GLDM/uebungen/uebung4/StackB.zip");
-		IJ.open("/Users/kenneth/git/uebung1_gdm/StackB.zip");
+//		IJ.open("/Users/kenneth/git/uebung1_gdm/StackB.zip");
+		IJ.open("./StackB.zip");
 		
 		GRDM_U4_s0570727 sd = new GRDM_U4_s0570727();
 		sd.imp = IJ.getImage();
@@ -76,8 +77,7 @@ public class GRDM_U4_s0570727 implements PlugInFilter {
 		if (s.equals("Overlay")) methode = 3;
 		if (s.equals("Schieb-Blende")) methode = 4;
 		if (s.equals("Chroma Key")) methode = 5;
-		if (s.equals("Extra")) methode = 6;
-		if (s.equals("Extra 2")) methode = 7;
+		if (s.equals("Jalousie")) methode = 6;
 
 		// Arrays fuer die einzelnen Bilder
 		int[] pixels_B;
@@ -194,20 +194,6 @@ public class GRDM_U4_s0570727 implements PlugInFilter {
 						if (y % num < distance / ( num-1 ))
 							pixels_Erg[pos] = pixels_A[pos];
 					}
-					
-					if (methode == 7 ) // Extra
-					{
-						float xPlusYDividedByZ = ( width + height ) / ((float)length -1 );
-						
-						
-						int b =  (int) Math.ceil((z-1) * xPlusYDividedByZ) ;
-					
-						
-
-						if ( x + y > b ) pixels_Erg[pos] = pixels_B[pos];
-						else pixels_Erg[pos] = pixels_A[pos];
-					}
-					
 				}
 		}
 

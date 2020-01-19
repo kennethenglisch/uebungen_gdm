@@ -128,21 +128,28 @@ public class GRDM_U5_s0570727 implements PlugIn {
 			int[] kernel = new int[9];
 			int count = 0;
 			
-			if (y == 0 || y == height - 1 || x == 0 || x == width - 1) 
-			{
-				for (int i = 0; i <= 8; i++)
-					kernel[i] = 0;
-			}
-			else 
-			{
+//			if (y == 0 || y == height - 1 || x == 0 || x == width - 1) 
+//			{
+//				for (int i = 0; i <= 8; i++)
+//					kernel[i] = 0;
+//			}
+//			else 
+//			{
 				for (int i = -1; i <= 1; i++)
 					for (int j = -1; j <= 1; j++) 
 					{
-						int pos = (y + i) * width + (x + j);
+						int l = i;
+						int m = j;
+						if(y + i < 0 || y + i >= height) 
+							l = 0;
+						if(x + j < 0 || x + j >= width) 
+							m = 0;
+						
+						int pos = (y + l) * width + (x + m);
 						kernel[count] = origPixels[pos];
 						count++;
 					}
-			}
+//			}
 			
 			return kernel;
 		}

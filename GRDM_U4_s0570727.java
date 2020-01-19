@@ -191,7 +191,7 @@ public class GRDM_U4_s0570727 implements PlugInFilter {
 
 						pixels_Erg[pos] = pixels_B[pos];
 
-						if (y % num < distance / ( num-1 ))
+						if (y % num < distance / ( num - 1 ))
 							pixels_Erg[pos] = pixels_A[pos];
 					}
 				}

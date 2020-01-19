@@ -32,7 +32,7 @@ public class GRDM_U5_s0570727 implements PlugIn {
 	private int width;
 	private int height;
 
-	String[] items = {"Original", "Weichzeichnen", "Hochpassgefiltert"};
+	String[] items = {"Original", "Weichzeichnen", "Hochpassgefiltert", "Verstärkte Kanten"};
 
 
 	public static void main(String args[]) {
@@ -215,40 +215,73 @@ public class GRDM_U5_s0570727 implements PlugIn {
 				}
 			}
 				
-				if (method.equals("Hochpassgefiltert")) {
-					
-					double param = (1.0 / 9.0);
-					double param2 = (8.0 / 9.0);
+			if (method.equals("Hochpassgefiltert")) {
+				double[] param = { -1.0 / 9, -1.0 / 9, -1.0 / 9, 
+								   -1.0 / 9, 8.0 / 9, -1.0 / 9, 
+								   -1.0 / 9, -1.0 / 9, -1.0 / 9 };
+				for (int y = 0; y < height; y++) {
+					for (int x = 0; x < width; x++) {
+						int pos = y * width + x;
+						int argb = origPixels[pos]; // Lesen der Originalwerte
 
-					for (int y=0; y<height; y++) {
-						for (int x=0; x<width; x++) {
-							int pos = y*width + x;
-							int argb = origPixels[pos];  // Lesen der Originalwerte 
+						int[] kernel = kernel(y, x);
 
-							
-							int[] kernel = kernel(y, x);
-							
-							int rn = 0, gn = 0, bn = 0;
-							
-							for (int i = 0; i < kernel.length; i++) 
-							{
-								if (i != 4) 
-								{
-									rn += param * argb('r' ,kernel[i]);
-									gn += param * argb('g' ,kernel[i]);
-									bn += param * argb('b' ,kernel[i]);
-								}
-								else 
-								{
-									rn += param2 * argb('r' ,kernel[i]);
-									gn += param2 * argb('g' ,kernel[i]);
-									bn += param2 * argb('b' ,kernel[i]);
-								}
-								
-							}
-							
-							
+						int rn = 0, gn = 0, bn = 0;
+						
+						// with offset for high pass filter 
+						for (int i = 0; i < kernel.length; i++) {
+							rn += param[i] * argb('r', kernel[i]) + 128;
+							gn += param[i] * argb('g', kernel[i]) + 128;
+							bn += param[i] * argb('b', kernel[i]) + 128;
 
+						}
+
+						pixels[pos] = (0xFF << 24) | (rn << 16) | (gn << 8) | bn;
+					}
+				}
+			}
+			if (method.equals("Verstärkte Kanten")) {
+				double[] param = { -1.0 / 9, -1.0 / 9, -1.0 / 9, 
+								   -1.0 / 9, 17.0 / 9, -1.0 / 9, 
+								   -1.0 / 9, -1.0 / 9, -1.0 / 9 };
+				for (int y = 0; y < height; y++) {
+					for (int x = 0; x < width; x++) {
+						int pos = y * width + x;
+						int argb = origPixels[pos]; // Lesen der Originalwerte
+
+						int[] kernel = kernel(y, x);
+
+						int rn = 0, gn = 0, bn = 0;
+
+						for (int i = 0; i < kernel.length; i++) {
+							rn += param[i] * argb('r', kernel[i]);
+							gn += param[i] * argb('g', kernel[i]);
+							bn += param[i] * argb('b', kernel[i]);
+
+						}
+						
+						// check for overflow
+						if (rn < 0) {
+							rn = 0;
+						} else if (rn > 255) {
+							rn = 255;
+						}
+
+						if (gn < 0) {
+							gn = 0;
+						}
+
+						else if (gn > 255) {
+							gn = 255;
+						}
+
+						if (bn < 0) {
+							bn = 0;
+						}
+
+						else if (bn > 255) {
+							bn = 255;
+						}
 							pixels[pos] = (0xFF<<24) | (rn<<16) | (gn << 8) | bn;
 						}
 					}

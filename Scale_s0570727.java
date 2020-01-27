@@ -33,8 +33,8 @@ public class Scale_s0570727 implements PlugInFilter {
 
 		GenericDialog gd = new GenericDialog("scale");
 		gd.addChoice("Methode", dropdownmenue, dropdownmenue[0]);
-		gd.addNumericField("Hoehe:", 250, 0);
-		gd.addNumericField("Breite:", 230, 0);
+		gd.addNumericField("Hoehe:", 500, 0);
+		gd.addNumericField("Breite:", 400, 0);
 
 		gd.showDialog();
 

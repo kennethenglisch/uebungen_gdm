@@ -44,7 +44,7 @@ public class Scale_s0570727 implements PlugInFilter {
 		int width = ip.getWidth(); // Breite bestimmen
 		int height = ip.getHeight(); // Hoehe bestimmen
 
-		ImagePlus neu = NewImage.createRGBImage("Skaliertes Bild", newWidth, newHeight, 1, NewImage.FILL_BLACK); // black für Kopie, falls Bild kleiner als Fläche
+		ImagePlus neu = NewImage.createRGBImage("Skaliertes Bild", newWidth, newHeight, 1, NewImage.FILL_BLACK); // black fï¿½r Kopie, falls Bild kleiner als Flï¿½che
 
 		ImageProcessor newIP = neu.getProcessor();
 
@@ -73,7 +73,7 @@ public class Scale_s0570727 implements PlugInFilter {
 				}
 			}
 		}
-
+		// Formel: 
 		// http://home.htw-berlin.de/~barthel/veranstaltungen/GLDM/vorlesungen/06_GLDM_Bildmanipulation3_geometrische.pdf
 		if (method.equals("Pixelwiederholung")) {
 
@@ -81,7 +81,7 @@ public class Scale_s0570727 implements PlugInFilter {
 			for (int newY = 0; newY < newHeight; newY++) {
 				for (int newX = 0; newX < newWidth; newX++) {
 					
-					// gerundete Werte für x und y
+					// gerundete Werte fï¿½r x und y
 					int x = (int) Math.round(newX * scaleWidth);
 					int y = (int) Math.round(newY * scaleHeight);
 
@@ -99,24 +99,26 @@ public class Scale_s0570727 implements PlugInFilter {
 		if (method.equals("Bilinear")) {
 			int PointA, PointB, PointC, PointD;
 			
-			// Skalierungswerte, brauchte height-1 und width-1 sonst IndexOutOfBounds-Fehler
+			// Skalierungswerte, height-1; width-1 sonst IndexOutOfBounds
 			
 			scaleHeight = (height - 1) / (newHeight * 1.0);
 			scaleWidth = (width - 1) / (newWidth * 1.0);
+			
 			// Schleife ueber das neue Bild
 			for (int newY = 0; newY < newHeight; newY++) {
 				for (int newX = 0; newX < newWidth; newX++) {
 					int y = (int) (newY * scaleHeight);
 					int x = (int) (newX * scaleWidth);
 
-					// v und h sind die Nachkommastelle vom skalierten Y-Wert/X-Wert
-					double v = (newY * scaleHeight) - y;
-					double h = (newX * scaleWidth) - x;
+					// commaY und commaX sind die Nachkommastelle vom skalierten Y-Wert/X-Wert
+					double commaY = (newY * scaleHeight) - y;
+					double commaX = (newX * scaleWidth) - x;
 
 					// Alte Position
 					int position = y * width + x;
 
 					// Die Punkte A, B, C und D und ihre ARGB-Werte
+					// umliegende Bildpunkte
 					PointA = pix[position];
 					int[] argbA = { ((PointA >> 16) & 0xff), ((PointA >> 8) & 0xff), (PointA & 0xff) };
 					PointB = pix[position + 1];
@@ -130,19 +132,19 @@ public class Scale_s0570727 implements PlugInFilter {
 
 					// Formel aus: http://home.htw-berlin.de/~barthel/veranstaltungen/GLDM/vorlesungen/07_GLDM_Bildmanipulation3_geometrische_2.pdf
 					// bzw. http://home.htw-berlin.de/~barthel/veranstaltungen/GLDM/vorlesungen/06_GLDM_Bildmanipulation3_geometrische.pdf
-					// P = A * (1-h) * (1-V) + B * h * (1-v) + C * (1-h) * v + D * h * v
-					r = (int) (argbA[0] * (1 - h) * (1 - v) + argbB[0] * h * (1 - v) + argbC[0] * (1 - h) * v
-							+ argbD[0] * h * v);
-					g = (int) (argbA[1] * (1 - h) * (1 - v) + argbB[1] * h * (1 - v) + argbC[1] * (1 - h) * v
-							+ argbD[1] * h * v);
-					b = (int) (argbA[2] * (1 - h) * (1 - v) + argbB[2] * h * (1 - v) + argbC[2] * (1 - h) * v
-							+ argbD[2] * h * v);
+					// P = A * (1-commaX) * (1-commaY) + B * commaX * (1-commaY) + C * (1-commaX) * commaY + D * commaX * commaY
+					r = (int) (argbA[0] * (1 - commaX) * (1 - commaY) + argbB[0] * commaX * (1 - commaY) + argbC[0] * (1 - commaX) * commaY
+							+ argbD[0] * commaX * commaY);
+					g = (int) (argbA[1] * (1 - commaX) * (1 - commaY) + argbB[1] * commaX * (1 - commaY) + argbC[1] * (1 - commaX) * commaY
+							+ argbD[1] * commaX * commaY);
+					b = (int) (argbA[2] * (1 - commaX) * (1 - commaY) + argbB[2] * commaX * (1 - commaY) + argbC[2] * (1 - commaX) * commaY
+							+ argbD[2] * commaX * commaY);
 
 
 					// Berechnung der neuen Position
 					int newPos = newY * newWidth + newX;
 
-					// Zurückschreiben der Werte
+					// Zurï¿½ckschreiben der Werte
 					newPix[newPos] = 0xFF << 24 | r << 16  | g << 8  | b;
 
 				}
